@@ -1,0 +1,37 @@
+services:
+  - docker
+
+
+script:
+  # Print the version for logging
+  - docker --version
+
+  # Build docker image for feed service and tag with remote image
+  - cd feed-ms
+  - docker build -t feed-ms:latest .
+  - docker tag feed-ms:latest priyamselugar/feed-ms:latest
+
+  # Build docker image for user service and tag with remote image
+  - cd ../user-ms
+  - docker build -t user-ms:latest .
+  - docker tag user-ms:latest priyamselugar/user-ms:latest
+
+  # Build docker image for frontend and tag with remote image
+  - cd ../frontend
+  - docker build -t frontend:latest .
+  - docker tag frontend:latest priyamselugar/frontend:latest
+
+  # Build docker image for reverse proxy and tag with remote image
+  - cd ../reverse-proxy
+  - docker build -t reverse-proxy:latest .
+  - docker tag reverse-proxy:latest priyamselugar/reverse-proxy:latest
+
+after_success:
+  # Push updated images to docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push priyamselugar/feed-ms:latest
+  - docker push priyamselugar/user-ms:latest
+  - docker push priyamselugar/frontend:latest
+  - docker push priyamselugar/reverse-proxy:latest
+
+ 

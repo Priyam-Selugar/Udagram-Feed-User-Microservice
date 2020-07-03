@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: user-ms
+  labels:
+    service: user-ms
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels: 
+      service: user-ms
+  template:
+    metadata:
+      labels:
+        service: user-ms
+    spec:
+      containers:
+      - name: user-ms
+        image: priyamselugar/user-ms:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        env:
+        - name: UdagramPostgresqlUsername
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramPostgresqlUsername
+        - name: UdagramPostgresqlPassword
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramPostgresqlPassword
+        - name: UdagramPostgresqlDatabase
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramPostgresqlDatabase
+        - name: UdagramPostgresqlHost
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramPostgresqlHost
+        - name: UdagramAWSRegion
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramAWSRegion
+        - name: UdagramAWSProfile
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramAWSProfile
+        - name: UdagramAWSMediaBucket
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramAWSMediaBucket
+        - name: UdagramWebAppUrl
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramWebAppUrl
+        - name: UdagramJwtSecret
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: UdagramJwtSecret
+      restartPolicy: Always
